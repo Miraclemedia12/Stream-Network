@@ -1,7 +1,3 @@
-dy>
-</html>
-
-  
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -110,43 +106,33 @@ dy>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Global instances
-        let db, auth, appId;
-        let firebaseReady = false;
+        // Your specific Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCkgorFG60krBLmsTVwQYstWCcskaQseBo",
+            authDomain: "stream-network-e020d.firebaseapp.com",
+            projectId: "stream-network-e020d",
+            storageBucket: "stream-network-e020d.firebasestorage.app",
+            messagingSenderId: "1040435649935",
+            appId: "1:1040435649935:web:b196efc160942b7e56bffa",
+            measurementId: "G-0W2LJZ2R3Z"
+        };
 
-        try {
-            const firebaseConfig = JSON.parse(__firebase_config);
-            const app = initializeApp(firebaseConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
-            appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-            firebaseReady = true;
-
-            const initAuth = async () => {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-            };
-            initAuth();
-        } catch (e) {
-            console.warn("Firebase config missing. Running in local UI mode.");
-        }
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
 
         // LOGIN SYSTEM
         window.checkLogin = () => {
             const user = document.getElementById('admin-user').value;
             const pass = document.getElementById('admin-pass').value;
             
-            // LOGINS DETAILS (Username: admin | Pass: stream2026)
             if (user === "admin" && pass === "stream2026") {
                 document.getElementById('login-overlay').classList.add('hidden');
                 document.getElementById('dashboard').classList.remove('hidden');
-                if(firebaseReady) loadCurrentData();
+                loadCurrentData();
             } else {
                 const err = document.getElementById('login-error');
                 err.classList.remove('hidden');
@@ -156,42 +142,38 @@ dy>
 
         // LOAD DATA FROM FIREBASE
         async function loadCurrentData() {
-            onAuthStateChanged(auth, async (user) => {
-                if (user && firebaseReady) {
-                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'paymentSettings');
-                    const snap = await getDoc(docRef);
-                    if (snap.exists()) {
-                        const data = snap.data();
-                        document.getElementById('db-acc-num').value = data.accountNumber || "";
-                        document.getElementById('db-bank-name').value = data.bankName || "";
-                        document.getElementById('db-acc-name').value = data.accountName || "";
-                        document.getElementById('db-amount').value = data.amount || "";
-                        document.getElementById('db-link').value = data.telegramLink || "";
-                    }
+            try {
+                await signInAnonymously(auth);
+                const docRef = doc(db, 'settings', 'payment');
+                const snap = await getDoc(docRef);
+                if (snap.exists()) {
+                    const data = snap.data();
+                    document.getElementById('db-acc-num').value = data.accNum || "";
+                    document.getElementById('db-bank-name').value = data.bank || "";
+                    document.getElementById('db-acc-name').value = data.name || "";
+                    document.getElementById('db-amount').value = data.amount || "";
+                    document.getElementById('db-link').value = data.link || "";
                 }
-            });
+            } catch (error) {
+                console.error("Error loading data:", error);
+            }
         }
 
         // UPDATE DATA IN FIREBASE
         window.updateSettings = async () => {
-            if (!firebaseReady) {
-                alert("Database not connected. Please check your Firebase configuration.");
-                return;
-            }
-            
             const btn = document.getElementById('update-btn');
             const status = document.getElementById('status-msg');
             btn.disabled = true;
             btn.innerText = "UPDATING...";
 
             try {
-                const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'paymentSettings');
+                const docRef = doc(db, 'settings', 'payment');
                 await setDoc(docRef, {
-                    accountNumber: document.getElementById('db-acc-num').value,
-                    bankName: document.getElementById('db-bank-name').value,
-                    accountName: document.getElementById('db-acc-name').value,
+                    accNum: document.getElementById('db-acc-num').value,
+                    bank: document.getElementById('db-bank-name').value,
+                    name: document.getElementById('db-acc-name').value,
                     amount: document.getElementById('db-amount').value,
-                    telegramLink: document.getElementById('db-link').value
+                    link: document.getElementById('db-link').value
                 }, { merge: true });
 
                 status.innerText = "✓ SETTINGS UPDATED SUCCESSFULLY";
@@ -199,7 +181,7 @@ dy>
                 status.classList.remove('hidden');
             } catch (e) {
                 console.error(e);
-                status.innerText = "Error: Permission Denied or Connection Lost";
+                status.innerText = "Error updating database";
                 status.className = "text-center text-xs font-bold uppercase tracking-widest text-red-500 mt-4";
                 status.classList.remove('hidden');
             } finally {
