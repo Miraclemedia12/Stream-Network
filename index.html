@@ -9,39 +9,58 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         
+        :root {
+            --neon-green: #b8d5b0; 
+            --bright-neon: #ccff00; 
+        }
+
         body {
             background-color: #0a0a0a;
             color: #ffffff;
             font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
         }
 
-        .neon-yellow { color: #ccff00; }
-        .bg-neon { background-color: #ccff00; color: #000; }
-        .border-neon { border: 2px solid #ccff00; }
-
+        .neon-yellow { color: var(--bright-neon); }
+        .bg-neon { background-color: var(--bright-neon); color: #000; }
+        
+        /* Transparent Sticky Header */
         .nav-blur {
-            background: rgba(10, 10, 10, 0.9);
-            backdrop-filter: blur(15px);
+            background: transparent;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .collab-card {
             background: #111;
-            border: 1.5px solid rgba(204, 255, 0, 0.2);
-            transition: transform 0.3s ease;
+            border: 1.5px solid rgba(204, 255, 0, 0.15);
+            transition: all 0.3s ease;
         }
 
+        /* Brighter Green Variant for Audio Collab */
+        .collab-card-audio {
+            border: 2px solid rgba(184, 213, 176, 0.7);
+            background: linear-gradient(145deg, #111, #0d1a15);
+            box-shadow: 0 0 15px rgba(184, 213, 176, 0.1);
+        }
+
+        .text-stream-green { color: var(--neon-green); }
+
         .btn-main {
-            border: 2px solid #ccff00;
-            color: #ccff00;
+            display: block;
+            text-align: center;
+            border: 2px solid var(--bright-neon);
+            color: var(--bright-neon);
             border-radius: 9999px;
             text-transform: uppercase;
             font-weight: 900;
             transition: all 0.3s ease;
+            text-decoration: none;
         }
 
         .btn-main:hover {
-            background: #ccff00;
+            background: var(--bright-neon);
             color: #000;
         }
 
@@ -50,27 +69,84 @@
             border-radius: 24px;
             object-fit: cover;
         }
+
+        /* LIVE NOTIFICATION POPUP */
+        .notif-popup {
+            position: fixed;
+            top: 85px;
+            left: -350px;
+            background: rgba(17, 17, 17, 0.95);
+            backdrop-filter: blur(10px);
+            border-left: 4px solid var(--neon-green);
+            padding: 12px 16px;
+            border-radius: 12px;
+            width: 280px;
+            z-index: 9999;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            transition: left 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .notif-popup.active { left: 20px; }
+        .notif-icon { color: var(--neon-green); font-size: 18px; }
+        .notif-text { font-size: 11px; line-height: 1.4; }
+        .notif-name { font-weight: 900; color: #fff; }
+        .notif-city { color: var(--bright-neon); font-weight: 700; }
+
+        /* Video Controls */
+        .video-overlay-btn {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(5px);
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            z-index: 10;
+        }
     </style>
 </head>
 <body class="antialiased">
 
+    <!-- Live Notification Popup -->
+    <div id="live-notif" class="notif-popup">
+        <div class="notif-icon" id="notif-icon"></div>
+        <div class="notif-text" id="notif-content"></div>
+    </div>
+
+    <!-- Transparent Navigation -->
     <nav class="nav-blur fixed top-0 w-full z-50 px-5 py-4 flex justify-between items-center">
         <div class="flex items-center gap-2">
-            <img src="logo.png" alt="Stream" class="h-6">
-            <span class="text-xl font-black tracking-tighter">Stream</span>
+            <img src="logo.png" alt="Stream" class="h-8">
         </div>
-        <button class="bg-neon px-5 py-2 rounded-full font-bold text-sm">Get Started</button>
+        <a href="register.html" class="bg-neon px-5 py-2 rounded-full font-bold text-sm shadow-lg shadow-lime-500/20 no-underline">Get Started</a>
     </nav>
 
+    <!-- Hero Section -->
     <section class="pt-28 px-6 max-w-lg mx-auto">
         <div class="relative rounded-3xl overflow-hidden mb-8 shadow-2xl">
-            <video autoplay muted loop playsinline>
+            <video id="heroVideo" autoplay muted loop playsinline>
                 <source src="video.mp4" type="video/mp4">
             </video>
-            <div class="absolute inset-0 flex items-center justify-center">
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <div class="bg-black/40 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 text-[10px] font-bold tracking-widest uppercase">
                     Watch Live Stream
                 </div>
+            </div>
+            <!-- Video Interactive Buttons -->
+            <div class="video-overlay-btn" id="muteBtn" onclick="toggleMute()">
+                <i class="fas fa-volume-mute" id="muteIcon"></i>
+            </div>
+            <div class="video-overlay-btn" style="right: 68px;" onclick="togglePlay()">
+                <i class="fas fa-pause" id="playIcon"></i>
             </div>
         </div>
 
@@ -93,18 +169,20 @@
             </div>
         </div>
 
-        <button class="w-full mt-10 btn-main py-4 text-lg italic tracking-wider">Start Your Journey</button>
+        <a href="register.html" class="w-full mt-10 btn-main py-4 text-lg italic tracking-wider">Start Your Journey</a>
     </section>
 
+    <!-- Paths Section -->
     <section class="mt-20 px-6 max-w-lg mx-auto text-center">
         <h2 class="text-3xl font-black mb-4">Choose Your Path on Stream</h2>
         <p class="text-gray-400 mb-10 text-sm">Stream offers three distinct tiers designed to match your ambition and unlock your earning potential.</p>
 
         <div class="space-y-6">
-            <div class="collab-card p-8 rounded-[40px]">
-                <i class="fa-solid fa-headphones text-4xl mb-4 text-gray-400"></i>
-                <h3 class="text-xl font-black uppercase tracking-widest">Audio Collab</h3>
-                <p class="text-xs text-gray-400 mt-2">Monetize Your Playlist. Partner with artists and labels. Don't just listen to music—get paid to support it.</p>
+            <!-- Brighter Audio Card -->
+            <div class="collab-card collab-card-audio p-8 rounded-[40px]">
+                <i class="fa-solid fa-headphones text-4xl mb-4 text-stream-green"></i>
+                <h3 class="text-xl font-black uppercase tracking-widest text-stream-green">Audio Collab</h3>
+                <p class="text-xs text-gray-300 mt-2">Monetize Your Playlist. Partner with artists and labels. Don't just listen to music—get paid to support it.</p>
             </div>
 
             <div class="collab-card p-8 rounded-[40px] border-green-500/40">
@@ -121,6 +199,7 @@
         </div>
     </section>
 
+    <!-- Video Collab Detailed Section -->
     <section class="mt-24 px-6 max-w-lg mx-auto">
         <div class="mb-10 relative">
             <video autoplay muted loop playsinline>
@@ -150,6 +229,7 @@
         </div>
     </section>
 
+    <!-- Snap Collab Detailed Section -->
     <section class="mt-24 px-6 max-w-lg mx-auto pb-20">
         <div class="mb-10">
             <img src="snap-card.jpg" alt="Snap Collab" class="rounded-[40px] shadow-2xl">
@@ -165,7 +245,7 @@
             <p class="flex items-center gap-3 text-sm font-bold"><span class="neon-yellow">✓</span> Collect $1.10 (N1,100) for every creative image interaction.</p>
         </div>
 
-        <button class="w-full mt-12 btn-main py-4 text-lg italic">Take A Step Now</button>
+        <a href="register.html" class="w-full mt-12 btn-main py-4 text-lg italic">Take A Step Now</a>
     </section>
 
     <footer class="py-16 text-center text-gray-500 text-xs border-t border-white/5 space-y-6">
@@ -176,5 +256,70 @@
         </div>
     </footer>
 
+    <script>
+        // VIDEO CONTROLS LOGIC
+        const video = document.getElementById('heroVideo');
+        const muteIcon = document.getElementById('muteIcon');
+        const playIcon = document.getElementById('playIcon');
+
+        function toggleMute() {
+            video.muted = !video.muted;
+            muteIcon.className = video.muted ? 'fas fa-volume-mute' : 'fas fa-volume-up';
+        }
+
+        function togglePlay() {
+            if (video.paused) {
+                video.play();
+                playIcon.className = 'fas fa-pause';
+            } else {
+                video.pause();
+                playIcon.className = 'fas fa-play';
+            }
+        }
+
+        // ACTIVITY FEED LOGIC (JOINED & WITHDREW ONLY)
+        const activities = [
+            { name: "Ahmed K.", city: "Kaduna", status: "just joined Stream", amount: "N12,000 Bonus", icon: "fa-user-plus" },
+            { name: "Blessing W.", city: "Port Harcourt", status: "just withdrew", amount: "N45,000", icon: "fa-wallet" },
+            { name: "Chinedu O.", city: "Enugu", status: "just joined Stream", amount: "N12,000 Bonus", icon: "fa-user-check" },
+            { name: "Fatima B.", city: "Maiduguri", status: "just withdrew", amount: "N18,500", icon: "fa-money-bill-transfer" },
+            { name: "Emeka V.", city: "Abuja", status: "just joined Stream", amount: "N12,000 Bonus", icon: "fa-bolt" },
+            { name: "Sandra P.", city: "Calabar", status: "just withdrew", amount: "N32,000", icon: "fa-check-double" },
+            { name: "Yusuf L.", city: "Ilorin", status: "just joined Stream", amount: "N12,000 Bonus", icon: "fa-user-plus" },
+            { name: "Olamide S.", city: "Lagos", status: "just withdrew", amount: "N65,000", icon: "fa-wallet" },
+            { name: "Ibrahim D.", city: "Kano", status: "just joined Stream", amount: "N12,000 Bonus", icon: "fa-user-check" },
+            { name: "Grace T.", city: "Ibadan", status: "just withdrew", amount: "N27,400", icon: "fa-money-bill-transfer" }
+        ];
+
+        let activityIndex = 0;
+        const notif = document.getElementById('live-notif');
+        const notifContent = document.getElementById('notif-content');
+        const notifIcon = document.getElementById('notif-icon');
+
+        function showNextActivity() {
+            const act = activities[activityIndex];
+            notifIcon.innerHTML = `<i class="fas ${act.icon}"></i>`;
+            notifContent.innerHTML = `
+                <div>
+                    <span class="notif-name">${act.name}</span> from 
+                    <span class="notif-city">${act.city}</span> 
+                    <span style="color:rgba(255,255,255,0.6)">${act.status}</span>
+                </div>
+                <div style="color:white; font-weight:900; margin-top:2px;">${act.amount}</div>
+            `;
+            notif.classList.add('active');
+            
+            setTimeout(() => {
+                notif.classList.remove('active');
+                activityIndex = (activityIndex + 1) % activities.length;
+                setTimeout(showNextActivity, 4000); 
+            }, 5000); 
+        }
+
+        window.onload = () => {
+            setTimeout(showNextActivity, 2500); 
+        };
+    </script>
 </body>
 </html>
+
