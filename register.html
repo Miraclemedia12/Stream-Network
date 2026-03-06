@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stream | Create Account</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        
+        body {
+            background: linear-gradient(180deg, #bfa34b 0%, #8e742a 100%);
+            font-family: 'Inter', sans-serif;
+            color: white;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .reg-container { max-width: 450px; margin: 0 auto; }
+
+        .video-frame {
+            position: relative;
+            border-radius: 35px;
+            overflow: hidden;
+            border: 4px solid rgba(191, 163, 75, 0.5);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            margin-bottom: 30px;
+            background: #000;
+            aspect-ratio: 16/9;
+        }
+
+        .unmute-btn {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 8px 14px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 10px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .input-box {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 16px;
+            color: white;
+            font-size: 15px;
+            margin-bottom: 18px;
+            outline: none;
+        }
+
+        .input-box:focus { border-color: #ccff00; }
+
+        .submit-btn {
+            width: 100%;
+            background: #ccff00;
+            color: #000;
+            font-weight: 900;
+            font-size: 18px;
+            padding: 18px;
+            border-radius: 18px;
+            text-transform: uppercase;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+            margin-top: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="reg-container">
+        <div class="flex justify-center mb-8">
+            <img src="logo.png" alt="Stream Logo" class="h-8">
+        </div>
+
+        <div class="video-frame">
+            <video id="streamVideo" autoplay muted loop playsinline class="w-full h-full object-cover">
+                <source src="video2.mp4" type="video/mp4">
+            </video>
+            <button onclick="handleAudio()" id="audioToggle" class="unmute-btn">
+                <i id="volIcon" class="fa-solid fa-volume-xmark"></i> <span id="btnText">UNMUTE</span>
+            </button>
+        </div>
+
+        <h2 class="text-2xl font-black text-center mb-8 italic">Create Stream Account</h2>
+
+        <form id="registrationForm">
+            <label class="form-label">Full Name</label>
+            <input type="text" id="fullName" placeholder="Your full name" class="input-box" required>
+
+            <label class="form-label">Username</label>
+            <input type="text" id="userName" placeholder="Unique username" class="input-box" required>
+
+            <label class="form-label">Email Address</label>
+            <input type="email" id="email" placeholder="example@gmail.com" class="input-box" required>
+
+            <label class="form-label">Phone Number</label>
+            <input type="tel" id="phone" placeholder="080 0000 0000" class="input-box" required>
+
+            <label class="form-label">Password</label>
+            <input type="password" id="password" placeholder="Min. 8 characters" class="input-box" required>
+
+            <button type="submit" class="submit-btn italic">Register & Proceed</button>
+        </form>
+    </div>
+
+    <script>
+        function handleAudio() {
+            const video = document.getElementById('streamVideo');
+            const icon = document.getElementById('volIcon');
+            const text = document.getElementById('btnText');
+            if (video.muted) {
+                video.muted = false;
+                icon.className = 'fa-solid fa-volume-high';
+                text.innerText = 'MUTED';
+            } else {
+                video.muted = true;
+                icon.className = 'fa-solid fa-volume-xmark';
+                text.innerText = 'UNMUTE';
+            }
+        }
+
+        // REDIRECT LOGIC
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 1. Save info so payment page can see it
+            const userData = {
+                name: document.getElementById('fullName').value,
+                email: document.getElementById('email').value,
+                username: document.getElementById('userName').value
+            };
+            localStorage.setItem('streamUser', JSON.stringify(userData));
+
+            // 2. Redirect to your payment.html file
+            window.location.href = 'payment.html';
+        });
+    </script>
+</body>
+  </html>
+
