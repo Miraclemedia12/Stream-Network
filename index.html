@@ -13,155 +13,166 @@
             background-color: #0a0a0a;
             color: #ffffff;
             font-family: 'Inter', sans-serif;
-            margin: 0;
         }
 
-        .glow-text { color: #ccff00; }
-        .bg-glow { background-color: #ccff00; color: #000; }
-        
-        .nav-glass {
-            background: rgba(10, 10, 10, 0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(204, 255, 0, 0.1);
+        .neon-yellow { color: #ccff00; }
+        .bg-neon { background-color: #ccff00; color: #000; }
+        .border-neon { border: 2px solid #ccff00; }
+
+        .nav-blur {
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .card-border {
-            border: 1px solid rgba(204, 255, 0, 0.3);
-            background: linear-gradient(145deg, #111, #050505);
+        .collab-card {
+            background: #111;
+            border: 1.5px solid rgba(204, 255, 0, 0.2);
+            transition: transform 0.3s ease;
         }
 
-        .btn-outline {
+        .btn-main {
             border: 2px solid #ccff00;
             color: #ccff00;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            font-weight: 900;
             transition: all 0.3s ease;
         }
 
-        .btn-outline:hover {
+        .btn-main:hover {
             background: #ccff00;
             color: #000;
         }
 
         video {
             width: 100%;
-            border-radius: 20px;
-            box-shadow: 0 0 30px rgba(204, 255, 0, 0.1);
-        }
-
-        .section-tag {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #ccff00;
-            font-weight: bold;
+            border-radius: 24px;
+            object-fit: cover;
         }
     </style>
 </head>
-<body>
+<body class="antialiased">
 
-    <nav class="nav-glass fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center">
+    <nav class="nav-blur fixed top-0 w-full z-50 px-5 py-4 flex justify-between items-center">
         <div class="flex items-center gap-2">
-            <img src="logo.png" alt="Stream Logo" class="h-8"> <span class="text-2xl font-black tracking-tighter">Stream</span>
+            <img src="logo.png" alt="Stream" class="h-6">
+            <span class="text-xl font-black tracking-tighter">Stream</span>
         </div>
-        <button class="bg-glow px-6 py-2 rounded-full font-bold text-sm">Get Started</button>
+        <button class="bg-neon px-5 py-2 rounded-full font-bold text-sm">Get Started</button>
     </nav>
 
-    <section class="pt-32 px-6 text-center">
-        <h1 class="text-4xl md:text-6xl font-black leading-tight">
-            Turn Up the <span class="glow-text">Volume</span>,<br>
-            Turn Up Your <span class="glow-text">Income</span>
-        </h1>
-        <p class="mt-6 text-gray-400 text-lg max-w-2xl mx-auto">
-            Stop listening for free. Audio Collab on the Stream App transforms your playlist into a paycheck by connecting you directly with major artists and labels.
-        </p>
-        
-        <div class="mt-10 max-w-md mx-auto relative">
+    <section class="pt-28 px-6 max-w-lg mx-auto">
+        <div class="relative rounded-3xl overflow-hidden mb-8 shadow-2xl">
             <video autoplay muted loop playsinline>
                 <source src="video.mp4" type="video/mp4">
             </video>
-            <div class="absolute bottom-10 left-0 right-0">
-                <div class="bg-black/60 backdrop-blur-md mx-6 py-3 rounded-xl border border-white/10">
-                    <p class="text-xs uppercase font-bold">Watch Live Stream</p>
-                    <p class="glow-text font-black text-xl">EARN $30-$100 DAILY</p>
+            <div class="absolute inset-0 flex items-center justify-center">
+                <div class="bg-black/40 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 text-[10px] font-bold tracking-widest uppercase">
+                    Watch Live Stream
                 </div>
             </div>
         </div>
-    </section>
 
-    <section class="mt-20 px-6 max-w-4xl mx-auto">
-        <h2 class="text-2xl font-bold mb-8">Don't just stream - collaborate:</h2>
-        <ul class="space-y-6">
-            <li class="flex gap-4 items-start">
-                <span class="text-2xl">🎧</span>
-                <p class="text-gray-300">Stream promoted hits and sound projects.</p>
-            </li>
-            <li class="flex gap-4 items-start">
-                <span class="text-2xl">🚀</span>
-                <p class="text-gray-300">Fuel artist growth and campaign success.</p>
-            </li>
-            <li class="flex gap-4 items-start">
-                <span class="text-2xl">✔️</span>
-                <p class="text-gray-300">Gamified earning experience on Stream App.</p>
-            </li>
-            <li class="flex gap-4 items-start">
-                <span class="bg-glow/20 p-1 rounded">💸</span>
-                <p class="text-white font-bold">Earn $1.50 (₦1,550) for every single sound collaboration.</p>
-            </li>
-        </ul>
-        <button class="w-full mt-10 btn-outline py-4 rounded-full font-black text-xl uppercase italic">
-            Start Your Journey
-        </button>
-    </section>
-
-    <section class="mt-32 px-6 bg-gradient-to-b from-transparent to-black/50 pb-20">
-        <h2 class="text-center text-3xl font-black mb-12">Choose Your Path on Stream</h2>
+        <h1 class="text-4xl font-black leading-tight">
+            Turn Up the <span class="neon-yellow">Volume</span>,<br>
+            Turn Up Your <span class="neon-yellow">Income</span>
+        </h1>
         
-        <div class="grid gap-8 max-w-lg mx-auto">
-            
-            <div class="card-border p-8 rounded-[30px] text-center">
-                <span class="text-5xl block mb-4">🎧</span>
-                <h3 class="text-2xl font-black uppercase">Audio Collab</h3>
-                <p class="text-gray-400 mt-4">Monetize Your Playlist. Partner with artists and labels. Don't just listen—get paid to support it.</p>
+        <p class="mt-4 text-gray-400 leading-relaxed">
+            Stop listening for free. Audio Collab on the <span class="text-white font-bold">Stream App</span> transforms your playlist into a paycheck by connecting you directly with major artists, labels, and distributors on the StreamOfficial platform.
+        </p>
+
+        <div class="mt-8 space-y-4">
+            <h2 class="text-xl font-bold">Don't just stream - collaborate:</h2>
+            <div class="space-y-3">
+                <p class="flex items-center gap-3 text-sm"><span class="neon-yellow">✓</span> 🎧 Stream promoted hits and sound projects.</p>
+                <p class="flex items-center gap-3 text-sm"><span class="neon-yellow">✓</span> 🚀 Fuel artist growth and campaign success.</p>
+                <p class="flex items-center gap-3 text-sm"><span class="neon-yellow">✓</span> Gamified earning experience on Stream App.</p>
+                <p class="flex items-center gap-3 text-sm font-bold"><span class="neon-yellow">✓</span> 💸 Earn $1.50 (N1,550) for every single sound collaboration.</p>
+            </div>
+        </div>
+
+        <button class="w-full mt-10 btn-main py-4 text-lg italic tracking-wider">Start Your Journey</button>
+    </section>
+
+    <section class="mt-20 px-6 max-w-lg mx-auto text-center">
+        <h2 class="text-3xl font-black mb-4">Choose Your Path on Stream</h2>
+        <p class="text-gray-400 mb-10 text-sm">Stream offers three distinct tiers designed to match your ambition and unlock your earning potential.</p>
+
+        <div class="space-y-6">
+            <div class="collab-card p-8 rounded-[40px]">
+                <i class="fa-solid fa-headphones text-4xl mb-4 text-gray-400"></i>
+                <h3 class="text-xl font-black uppercase tracking-widest">Audio Collab</h3>
+                <p class="text-xs text-gray-400 mt-2">Monetize Your Playlist. Partner with artists and labels. Don't just listen to music—get paid to support it.</p>
             </div>
 
-            <div class="card-border p-8 rounded-[30px] text-center border-green-500/50">
-                <span class="text-5xl block mb-4">🎬</span>
-                <h3 class="text-2xl font-black uppercase">Video Collab</h3>
-                <p class="text-gray-400 mt-4">Transform viewing into influence. <br>
-                    <span class="glow-text font-black text-2xl mt-2 block">$2.70 (₦2,750)</span>
-                    for each successful view and distribution aid.
-                </p>
+            <div class="collab-card p-8 rounded-[40px] border-green-500/40">
+                <i class="fa-solid fa-clapperboard text-4xl mb-4 text-gray-400"></i>
+                <h3 class="text-xl font-black uppercase tracking-widest">Video Collab</h3>
+                <p class="text-xs text-gray-400 mt-2">Transform viewing into influence. Earn premium rates for distribution and audience engagement.</p>
             </div>
 
-            <div class="card-border p-8 rounded-[30px] text-center border-yellow-500/50">
-                <span class="text-5xl block mb-4">🖼️</span>
-                <h3 class="text-2xl font-black uppercase">Snap Collab</h3>
-                <p class="text-gray-400 mt-4">Profit from the Visual Economy. Collect <span class="glow-text">$1.10</span> for every creative image interaction.</p>
+            <div class="collab-card p-8 rounded-[40px] border-blue-500/40">
+                <i class="fa-solid fa-image text-4xl mb-4 text-gray-400"></i>
+                <h3 class="text-xl font-black uppercase tracking-widest">Snap Collab</h3>
+                <p class="text-xs text-gray-400 mt-2">Your Eyes, Your Earnings. Join the visual economy by engaging with professional creatives.</p>
             </div>
-
         </div>
     </section>
 
-    <section class="px-6 py-20 text-center">
-        <h2 class="text-3xl font-black mb-6">Turn <span class="glow-text">Screen Time</span> into Payday</h2>
-        <div class="max-w-md mx-auto mb-10">
+    <section class="mt-24 px-6 max-w-lg mx-auto">
+        <div class="mb-10 relative">
             <video autoplay muted loop playsinline>
                 <source src="video2.mp4" type="video/mp4">
             </video>
         </div>
-        <div class="space-y-4 text-left max-w-lg mx-auto">
-            <p class="flex items-center gap-3"><span class="glow-text">✓</span> Watch exclusive film promos.</p>
-            <p class="flex items-center gap-3"><span class="glow-text">✓</span> Drive distribution for major brands.</p>
-            <p class="flex items-center gap-3 font-bold text-lg">💰 Pocket $2.70 (₦2,750) per successful collaboration.</p>
+
+        <h2 class="text-4xl font-black mb-4">Turn <span class="neon-yellow">Screen Time</span> into Payday</h2>
+        <p class="text-gray-400 text-sm mb-6">Why watch for free when you can watch for profit? Video Collab on Stream bridges the gap between you and global movie studios, production houses, and top-tier creators.</p>
+
+        <div class="space-y-4 mb-8">
+            <h3 class="font-bold">From Movie Trailers to Brand Reels:</h3>
+            <p class="flex items-center gap-3 text-sm text-gray-300"><span class="neon-yellow font-bold">✓</span> Watch exclusive film promos and campaign videos.</p>
+            <p class="flex items-center gap-3 text-sm text-gray-300"><span class="neon-yellow font-bold">✓</span> Drive distribution and engagement for major brands.</p>
+            <p class="flex items-center gap-3 text-sm font-bold"><span class="neon-yellow">✓</span> 💰 Pocket $2.70 (N2,750) for every successful view and collaboration.</p>
         </div>
-        <button class="mt-12 w-full btn-outline py-4 rounded-full font-black">TAKE A STEP NOW</button>
+
+        <div class="bg-green-950/30 p-6 rounded-2xl border border-green-900/50 text-green-400 text-sm mb-12">
+            <span class="font-black">STREAM APP</span> turns the simple act of watching video into a powerful revenue channel. You help brands reach the world; they reward you with cash.
+        </div>
+
+        <div class="collab-card p-10 rounded-[40px] text-center border-green-500/30">
+            <h3 class="text-xl font-black mb-4 uppercase">Watch, Engage & Earn with Stream</h3>
+            <p class="text-xs text-gray-400 mb-6 italic leading-relaxed">Collaborate with film studios, production houses, creators, and global distributors through official video content on StreamOfficial.</p>
+            <div class="text-3xl font-black neon-yellow mb-2">$2.70 (N2,750)</div>
+            <p class="text-[10px] text-gray-500 uppercase tracking-widest">For each successful collaboration</p>
+        </div>
     </section>
 
-    <footer class="py-20 border-t border-white/5 text-center text-gray-500">
-        <div class="flex flex-col items-center gap-6">
-            <p class="text-sm">© 2026 Stream. All Rights Reserved.</p>
-            <a href="https://wa.me/yournumber" class="flex items-center gap-2 text-white font-bold">
-                <i class="fab fa-whatsapp text-green-500"></i> Join our Channel
-            </a>
+    <section class="mt-24 px-6 max-w-lg mx-auto pb-20">
+        <div class="mb-10">
+            <img src="snap-card.jpg" alt="Snap Collab" class="rounded-[40px] shadow-2xl">
+        </div>
+
+        <h2 class="text-4xl font-black mb-4 leading-tight italic">Profit from the <span class="neon-yellow">Visual Economy</span></h2>
+        <p class="text-gray-400 text-sm mb-8 leading-relaxed">Your attention is valuable—start charging for it. Snap Collab is the visual marketplace on STREAM where looking at content puts money in your pocket.</p>
+
+        <div class="space-y-4">
+            <h3 class="font-bold">Engage with Official Visuals:</h3>
+            <p class="flex items-center gap-3 text-sm text-gray-300"><span class="neon-yellow font-bold">✓</span> Rate and view artworks, movie posters, and illustrations.</p>
+            <p class="flex items-center gap-3 text-sm text-gray-300"><span class="neon-yellow font-bold">✓</span> Support design campaigns and brand visibility.</p>
+            <p class="flex items-center gap-3 text-sm font-bold"><span class="neon-yellow">✓</span> Collect $1.10 (N1,100) for every creative image interaction.</p>
+        </div>
+
+        <button class="w-full mt-12 btn-main py-4 text-lg italic">Take A Step Now</button>
+    </section>
+
+    <footer class="py-16 text-center text-gray-500 text-xs border-t border-white/5 space-y-6">
+        <p>© 2026 Stream. All Rights Reserved.</p>
+        <div class="flex justify-center items-center gap-2 text-white font-bold opacity-70">
+            <i class="fa-brands fa-whatsapp text-lg"></i>
+            <span>Join our Channel</span>
         </div>
     </footer>
 
