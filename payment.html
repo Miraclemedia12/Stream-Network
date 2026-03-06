@@ -8,104 +8,90 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body {
-            background-color: #0d1117;
-            color: #ffffff;
-            font-family: 'Inter', sans-serif;
-        }
-        .card-bg {
-            background-color: #161b22;
-            border: 1px solid #30363d;
-        }
+        body { background-color: #0d1117; color: #ffffff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
         .neon-yellow { color: #ccff00; }
         .bg-neon { background-color: #ccff00; color: #000; }
-        .copy-btn {
-            background: transparent;
-            border: none;
-            color: #8b949e;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-        .copy-btn:hover { color: #ccff00; }
-        .input-box {
-            background: #0d1117;
+        .input-box { background: #0d1117; border: 1px solid #30363d; border-radius: 8px; padding: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .audio-player { background: #1c2128; border: 1px solid #ccff0044; border-radius: 12px; padding: 15px; }
+        
+        /* Activity Popup Animation */
+        #activity-popup {
+            position: fixed;
+            bottom: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(22, 27, 34, 0.95);
             border: 1px solid #30363d;
-            border-radius: 8px;
-            padding: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-        .audio-player {
-            background: #1c2128;
-            border: 1px solid #ccff0044;
+            border-left: 4px solid #ccff00;
+            padding: 12px 20px;
             border-radius: 12px;
-            padding: 15px;
+            width: 90%;
+            max-width: 320px;
+            transition: all 0.5s ease;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
+        #activity-popup.show { bottom: 20px; }
     </style>
 </head>
 <body class="p-4 flex flex-col items-center min-h-screen">
 
     <div class="w-full max-w-md mt-8 text-center">
-        <!-- Logo Icon -->
         <div class="inline-flex items-center justify-center w-20 h-20 rounded-full border-4 border-neon-yellow mb-6">
             <i class="fas fa-dollar-sign text-4xl neon-yellow"></i>
         </div>
 
-        <h1 class="text-3xl font-black mb-2">Pay For Stream</h1>
+        <h1 class="text-3xl font-black mb-2 tracking-tight">Pay For Stream</h1>
         <p class="text-gray-400 text-sm mb-4 px-6">Proceed to your bank app to complete this transaction.</p>
         
         <p class="text-yellow-500 font-bold text-xs mb-6 uppercase tracking-wider">
             <i class="fas fa-exclamation-triangle"></i> NOTE: DO NOT PAY WITH OPAY
         </p>
 
-        <!-- Audio Instruction -->
         <div class="audio-player mb-8">
             <p class="text-[10px] neon-yellow font-bold uppercase mb-2 flex items-center justify-center gap-2">
                 <i class="fas fa-volume-up"></i> Listen: How it works
             </p>
             <audio controls class="w-full h-8">
                 <source src="instruction.mp3" type="audio/mpeg">
-                Your browser does not support the audio element.
             </audio>
         </div>
 
-        <!-- Bank Details (Dynamic via Firebase) -->
         <div class="space-y-3 text-left">
             <div class="text-xs text-gray-500 ml-1 mb-1">Account Number</div>
             <div class="input-box">
                 <span id="acc-num" class="text-xl font-black tracking-widest">Loading...</span>
-                <button class="copy-btn" onclick="copyText('acc-num')"><i class="far fa-copy text-lg"></i></button>
+                <button onclick="copyText('acc-num')"><i class="far fa-copy text-lg text-gray-500 hover:text-white"></i></button>
             </div>
 
             <div class="text-xs text-gray-500 ml-1 mb-1">Bank Name</div>
             <div class="input-box">
                 <span id="bank-name" class="font-bold">Loading...</span>
-                <button class="copy-btn" onclick="copyText('bank-name')"><i class="far fa-copy"></i></button>
+                <button onclick="copyText('bank-name')"><i class="far fa-copy text-gray-500 hover:text-white"></i></button>
             </div>
 
             <div class="text-xs text-gray-500 ml-1 mb-1">Account Name</div>
             <div class="input-box">
                 <span id="acc-name" class="font-bold">Loading...</span>
-                <button class="copy-btn" onclick="copyText('acc-name')"><i class="far fa-copy"></i></button>
+                <button onclick="copyText('acc-name')"><i class="far fa-copy text-gray-500 hover:text-white"></i></button>
             </div>
 
             <div class="text-xs text-gray-500 ml-1 mb-1">Amount to Pay</div>
             <div class="input-box border-2 border-neon-yellow/50">
                 <span id="amount" class="text-2xl font-black neon-yellow">Loading...</span>
-                <button class="copy-btn" onclick="copyText('amount')"><i class="far fa-copy neon-yellow"></i></button>
+                <button onclick="copyText('amount')"><i class="far fa-copy neon-yellow"></i></button>
             </div>
         </div>
 
-        <!-- Timer -->
         <div class="mt-8 bg-yellow-900/20 p-4 rounded-xl border border-yellow-700/30">
-            <p class="text-yellow-600 text-xs font-bold uppercase mb-1">This payment details will expire in:</p>
+            <p class="text-yellow-600 text-xs font-bold uppercase mb-1">Payment details expire in:</p>
             <div id="timer" class="text-2xl font-black neon-yellow">30:00</div>
         </div>
 
-        <!-- Action Button -->
-        <button id="pay-btn" onclick="handlePaid()" class="w-full bg-neon mt-8 py-4 rounded-xl font-black flex items-center justify-center gap-3 text-lg uppercase shadow-xl shadow-lime-500/10">
+        <button onclick="handlePaid()" class="w-full bg-neon mt-8 py-5 rounded-xl font-black flex items-center justify-center gap-3 text-lg uppercase shadow-xl shadow-lime-500/20">
             <i class="fas fa-check-circle"></i> I Have Paid
         </button>
 
@@ -115,83 +101,93 @@
         </footer>
     </div>
 
-    <!-- Firebase Logic -->
+    <!-- Activity Notification Popup -->
+    <div id="activity-popup">
+        <div class="w-10 h-10 rounded-full bg-neon flex items-center justify-center text-black flex-shrink-0">
+            <i id="popup-icon" class="fas fa-user-plus"></i>
+        </div>
+        <div class="flex-grow">
+            <p id="popup-text" class="text-xs leading-tight font-medium text-gray-200">Loading activity...</p>
+            <p class="text-[9px] text-gray-500 font-bold uppercase mt-1">Just Now</p>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Firebase Configuration (Provided by env)
-        const firebaseConfig = JSON.parse(__firebase_config);
+        // Your exact Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCkgorFG60krBLmsTVwQYstWCcskaQseBo",
+            authDomain: "stream-network-e020d.firebaseapp.com",
+            projectId: "stream-network-e020d",
+            storageBucket: "stream-network-e020d.firebasestorage.app",
+            messagingSenderId: "1040435649935",
+            appId: "1:1040435649935:web:b196efc160942b7e56bffa",
+            measurementId: "G-0W2LJZ2R3Z"
+        };
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        let redirect = "https://t.me/stream_support";
 
-        let redirectLink = "https://t.me/stream_support"; // Default fallback
-
-        // Auth Logic (Rule 3)
-        const initAuth = async () => {
-            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                await signInWithCustomToken(auth, __initial_auth_token);
-            } else {
-                await signInAnonymously(auth);
-            }
-        };
-
-        initAuth();
-
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                // Fetch Settings (Rule 1 Path)
-                const settingsDoc = doc(db, 'artifacts', appId, 'public', 'data', 'paymentSettings');
-                
-                onSnapshot(settingsDoc, (docSnap) => {
-                    if (docSnap.exists()) {
-                        const data = docSnap.data();
-                        document.getElementById('acc-num').innerText = data.accountNumber || "8052839670";
-                        document.getElementById('bank-name').innerText = data.bankName || "Moniepoint MFB";
-                        document.getElementById('acc-name').innerText = data.accountName || "V Media";
-                        document.getElementById('amount').innerText = `₦${data.amount || "12,000"}`;
-                        redirectLink = data.telegramLink || redirectLink;
-                    }
-                }, (error) => console.error("Firestore error:", error));
-            }
+        // Anonymous login and data sync
+        signInAnonymously(auth).then(() => {
+            onSnapshot(doc(db, 'settings', 'payment'), (s) => {
+                if(s.exists()){
+                    const d = s.data();
+                    document.getElementById('acc-num').innerText = d.accNum || "8052839670";
+                    document.getElementById('bank-name').innerText = d.bank || "Moniepoint MFB";
+                    document.getElementById('acc-name').innerText = d.name || "V Media";
+                    document.getElementById('amount').innerText = d.amount ? `₦${d.amount}` : "₦12,000";
+                    redirect = d.link || redirect;
+                }
+            });
         });
 
-        // 30 Minute Countdown
-        let time = 30 * 60;
-        const timerEl = document.getElementById('timer');
+        // Activity Popup Logic
+        const users = ["Musa A.", "Chidi O.", "Abiola S.", "Ibrahim K.", "Emeka J.", "Tunde L.", "Precious E.", "Blessing U.", "Daniel F.", "Victory G."];
+        const popup = document.getElementById('activity-popup');
+        const popupText = document.getElementById('popup-text');
+        const popupIcon = document.getElementById('popup-icon');
 
-        const updateTimer = () => {
-            const minutes = Math.floor(time / 60);
-            const seconds = time % 60;
-            timerEl.innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-            if (time > 0) time--;
-        };
-
-        setInterval(updateTimer, 1000);
-
-        // Global functions
-        window.copyText = (id) => {
-            const text = document.getElementById(id).innerText;
-            const tempInput = document.createElement("input");
-            tempInput.value = text;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand("copy");
-            document.body.removeChild(tempInput);
+        function showActivity() {
+            const user = users[Math.floor(Math.random() * users.length)];
+            const isWithdraw = Math.random() > 0.5;
             
-            // Visual Feedback
-            const btn = document.querySelector(`[onclick="copyText('${id}')"]`);
-            const originalIcon = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-check neon-yellow"></i>';
-            setTimeout(() => btn.innerHTML = originalIcon, 2000);
+            if (isWithdraw) {
+                popupIcon.className = "fas fa-money-bill-wave";
+                popupText.innerHTML = `<span class="neon-yellow font-bold">${user}</span> just withdrew <span class="neon-yellow font-bold">₦${(Math.floor(Math.random() * 50) + 10) * 1000}</span> from Stream.`;
+            } else {
+                popupIcon.className = "fas fa-user-plus";
+                popupText.innerHTML = `<span class="neon-yellow font-bold">${user}</span> just registered for <span class="neon-yellow font-bold">Stream</span> and earned a bonus.`;
+            }
+
+            popup.classList.add('show');
+            setTimeout(() => popup.classList.remove('show'), 5000);
+            setTimeout(showActivity, Math.floor(Math.random() * 10000) + 8000); // 8-18 seconds gap
+        }
+
+        setTimeout(showActivity, 3000); // First one after 3s
+
+        // Timer
+        let time = 30 * 60;
+        setInterval(() => {
+            let m = Math.floor(time / 60), s = time % 60;
+            document.getElementById('timer').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+            if (time > 0) time--;
+        }, 1000);
+
+        // Copy and Action
+        window.copyText = (id) => {
+            const t = document.getElementById(id).innerText.replace('₦','');
+            navigator.clipboard.writeText(t);
+            alert("Copied: " + t);
         };
 
-        window.handlePaid = () => {
-            window.location.href = redirectLink;
-        };
+        window.handlePaid = () => { window.location.href = redirect; };
     </script>
 </body>
 </html>
