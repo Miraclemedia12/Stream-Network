@@ -3,128 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stream | Secure Payment</title>
+    <title>Pay For Stream</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { background: linear-gradient(180deg, #bfa34b 0%, #8e742a 100%); font-family: 'Inter', sans-serif; color: white; min-height: 100vh; padding: 20px; }
-        .payment-container { max-width: 400px; margin: auto; }
-        .card { background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; padding: 25px; margin-bottom: 20px; }
-        .timer-box { background: rgba(204, 255, 0, 0.1); border: 1px dashed #ccff00; padding: 10px; border-radius: 12px; text-align: center; color: #ccff00; font-weight: 900; font-size: 22px; }
+        body {
+            background-color: #0d1117;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+        }
+        .card-bg {
+            background-color: #161b22;
+            border: 1px solid #30363d;
+        }
         .neon-yellow { color: #ccff00; }
-        .btn-paid { width: 100%; background: #ccff00; color: black; font-weight: 900; padding: 18px; border-radius: 18px; text-transform: uppercase; margin-top: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); cursor: pointer; }
+        .bg-neon { background-color: #ccff00; color: #000; }
+        .copy-btn {
+            background: transparent;
+            border: none;
+            color: #8b949e;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .copy-btn:hover { color: #ccff00; }
+        .input-box {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .audio-player {
+            background: #1c2128;
+            border: 1px solid #ccff0044;
+            border-radius: 12px;
+            padding: 15px;
+        }
     </style>
 </head>
-<body>
+<body class="p-4 flex flex-col items-center min-h-screen">
 
-<div class="payment-container">
-    <div class="flex justify-center mb-6"><img src="logo.png" class="h-8"></div>
+    <div class="w-full max-w-md mt-8 text-center">
+        <!-- Logo Icon -->
+        <div class="inline-flex items-center justify-center w-20 h-20 rounded-full border-4 border-neon-yellow mb-6">
+            <i class="fas fa-dollar-sign text-4xl neon-yellow"></i>
+        </div>
 
-    <div class="card">
-        <p class="text-center text-[10px] font-black uppercase mb-2 tracking-widest opacity-70">Payment Window Closes In:</p>
-        <div id="timer" class="timer-box italic">20:00</div>
-    </div>
+        <h1 class="text-3xl font-black mb-2">Pay For Stream</h1>
+        <p class="text-gray-400 text-sm mb-4 px-6">Proceed to your bank app to complete this transaction.</p>
+        
+        <p class="text-yellow-500 font-bold text-xs mb-6 uppercase tracking-wider">
+            <i class="fas fa-exclamation-triangle"></i> NOTE: DO NOT PAY WITH OPAY
+        </p>
 
-    <div class="card">
-        <h3 class="text-sm font-black mb-4 flex items-center gap-2 italic">
-            <i class="fa-solid fa-bank neon-yellow"></i> PAYMENT DETAILS
-        </h3>
-        <div class="space-y-4 text-sm">
-            <div>
-                <p class="text-[10px] uppercase opacity-50 font-bold">Bank Name</p>
-                <p id="bank-name" class="font-bold text-lg">Loading...</p>
+        <!-- Audio Instruction -->
+        <div class="audio-player mb-8">
+            <p class="text-[10px] neon-yellow font-bold uppercase mb-2 flex items-center justify-center gap-2">
+                <i class="fas fa-volume-up"></i> Listen: How it works
+            </p>
+            <audio controls class="w-full h-8">
+                <source src="instruction.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+
+        <!-- Bank Details (Dynamic via Firebase) -->
+        <div class="space-y-3 text-left">
+            <div class="text-xs text-gray-500 ml-1 mb-1">Account Number</div>
+            <div class="input-box">
+                <span id="acc-num" class="text-xl font-black tracking-widest">Loading...</span>
+                <button class="copy-btn" onclick="copyText('acc-num')"><i class="far fa-copy text-lg"></i></button>
             </div>
-            <div>
-                <p class="text-[10px] uppercase opacity-50 font-bold">Account Number</p>
-                <div class="flex justify-between items-center">
-                    <p id="account-num" class="font-black text-xl tracking-wider">Loading...</p>
-                    <button onclick="copyAcc()" class="text-[10px] bg-white/10 px-3 py-1 rounded-md">COPY</button>
-                </div>
+
+            <div class="text-xs text-gray-500 ml-1 mb-1">Bank Name</div>
+            <div class="input-box">
+                <span id="bank-name" class="font-bold">Loading...</span>
+                <button class="copy-btn" onclick="copyText('bank-name')"><i class="far fa-copy"></i></button>
             </div>
-            <div>
-                <p class="text-[10px] uppercase opacity-50 font-bold">Account Name</p>
-                <p id="account-name" class="font-bold">Loading...</p>
+
+            <div class="text-xs text-gray-500 ml-1 mb-1">Account Name</div>
+            <div class="input-box">
+                <span id="acc-name" class="font-bold">Loading...</span>
+                <button class="copy-btn" onclick="copyText('acc-name')"><i class="far fa-copy"></i></button>
+            </div>
+
+            <div class="text-xs text-gray-500 ml-1 mb-1">Amount to Pay</div>
+            <div class="input-box border-2 border-neon-yellow/50">
+                <span id="amount" class="text-2xl font-black neon-yellow">Loading...</span>
+                <button class="copy-btn" onclick="copyText('amount')"><i class="far fa-copy neon-yellow"></i></button>
             </div>
         </div>
+
+        <!-- Timer -->
+        <div class="mt-8 bg-yellow-900/20 p-4 rounded-xl border border-yellow-700/30">
+            <p class="text-yellow-600 text-xs font-bold uppercase mb-1">This payment details will expire in:</p>
+            <div id="timer" class="text-2xl font-black neon-yellow">30:00</div>
+        </div>
+
+        <!-- Action Button -->
+        <button id="pay-btn" onclick="handlePaid()" class="w-full bg-neon mt-8 py-4 rounded-xl font-black flex items-center justify-center gap-3 text-lg uppercase shadow-xl shadow-lime-500/10">
+            <i class="fas fa-check-circle"></i> I Have Paid
+        </button>
+
+        <footer class="mt-12 pb-8 flex justify-center items-center gap-2 text-gray-500 text-sm">
+            <i class="fab fa-whatsapp text-xl"></i>
+            <span class="font-bold">Join our Channel</span>
+        </footer>
     </div>
 
-    <div class="card py-4 text-center">
-        <p class="text-[10px] font-bold uppercase mb-3 opacity-60">Listen to Instructions</p>
-        <audio controls class="w-full h-8 opacity-80">
-            <source src="instruction.mp3" type="audio/mpeg">
-        </audio>
-    </div>
+    <!-- Firebase Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    <button class="btn-paid italic" id="payButton">I Have Paid</button>
-</div>
+        // Firebase Configuration (Provided by env)
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        let redirectLink = "https://t.me/stream_support"; // Default fallback
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyCkgorFG60krBLmsTVwQYstWCcskaQseBo",
-    authDomain: "stream-network-e020d.firebaseapp.com",
-    projectId: "stream-network-e020d",
-    storageBucket: "stream-network-e020d.firebasestorage.app",
-    messagingSenderId: "1040435649935",
-    appId: "1:1040435649935:web:b196efc160942b7e56bffa"
-  };
+        // Auth Logic (Rule 3)
+        const initAuth = async () => {
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                await signInWithCustomToken(auth, __initial_auth_token);
+            } else {
+                await signInAnonymously(auth);
+            }
+        };
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
+        initAuth();
 
-  // REFERENCES TO DATA
-  const accountRef = ref(db, 'admin/accountDetails');
-  const redirectRef = ref(db, 'admin/redirectLink');
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                // Fetch Settings (Rule 1 Path)
+                const settingsDoc = doc(db, 'artifacts', appId, 'public', 'data', 'paymentSettings');
+                
+                onSnapshot(settingsDoc, (docSnap) => {
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        document.getElementById('acc-num').innerText = data.accountNumber || "8052839670";
+                        document.getElementById('bank-name').innerText = data.bankName || "Moniepoint MFB";
+                        document.getElementById('acc-name').innerText = data.accountName || "V Media";
+                        document.getElementById('amount').innerText = `₦${data.amount || "12,000"}`;
+                        redirectLink = data.telegramLink || redirectLink;
+                    }
+                }, (error) => console.error("Firestore error:", error));
+            }
+        });
 
-  let currentRedirectLink = "#";
+        // 30 Minute Countdown
+        let time = 30 * 60;
+        const timerEl = document.getElementById('timer');
 
-  // 1. Live Listen for Account Details
-  onValue(accountRef, (snapshot) => {
-    const data = snapshot.val();
-    if(data) {
-        document.getElementById('bank-name').innerText = data.bank;
-        document.getElementById('account-num').innerText = data.number;
-        document.getElementById('account-name').innerText = data.name;
-    }
-  });
+        const updateTimer = () => {
+            const minutes = Math.floor(time / 60);
+            const seconds = time % 60;
+            timerEl.innerText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+            if (time > 0) time--;
+        };
 
-  // 2. Live Listen for Redirect Link
-  onValue(redirectRef, (snapshot) => {
-    currentRedirectLink = snapshot.val();
-  });
+        setInterval(updateTimer, 1000);
 
-  // 3. Handle "I Have Paid" Button
-  document.getElementById('payButton').addEventListener('click', () => {
-      if(currentRedirectLink && currentRedirectLink !== "#") {
-          window.location.href = currentRedirectLink;
-      } else {
-          alert("Verifying payment... Please wait 60 seconds.");
-      }
-  });
+        // Global functions
+        window.copyText = (id) => {
+            const text = document.getElementById(id).innerText;
+            const tempInput = document.createElement("input");
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+            
+            // Visual Feedback
+            const btn = document.querySelector(`[onclick="copyText('${id}')"]`);
+            const originalIcon = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check neon-yellow"></i>';
+            setTimeout(() => btn.innerHTML = originalIcon, 2000);
+        };
 
-</script>
-
-<script>
-    // 20 Minute Timer
-    let time = 20 * 60;
-    setInterval(() => {
-        let min = Math.floor(time / 60);
-        let sec = time % 60;
-        document.getElementById('timer').innerText = `${min}:${sec < 10 ? '0'+sec : sec}`;
-        if(time > 0) time--;
-    }, 1000);
-
-    function copyAcc() {
-        const num = document.getElementById('account-num').innerText;
-        navigator.clipboard.writeText(num);
-        alert("Account number copied!");
-    }
-</script>
-
+        window.handlePaid = () => {
+            window.location.href = redirectLink;
+        };
+    </script>
 </body>
 </html>
 
